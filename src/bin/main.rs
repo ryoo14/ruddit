@@ -1,43 +1,7 @@
 use roux::{Me, Reddit, Subreddit, User};
-use serde::Deserialize;
-use std::fs;
+use ruddit::{setting::Setting, subscribe_data::RedditResponse};
 use tokio;
-use toml;
 use ureq;
-
-// subscriber
-type RedditResponse = BasicListing<RedditResponseData>;
-type BasicListing<T> = BasicThing<Listing<BasicThing<T>>>;
-
-#[derive(Deserialize)]
-struct RedditResponseData {
-    display_name: String,
-}
-
-#[derive(Deserialize)]
-struct BasicThing<T> {
-    kind: String,
-    data: T,
-}
-
-#[derive(Deserialize)]
-struct Listing<T> {
-    modhash: Option<String>,
-    dist: Option<i32>,
-    after: Option<String>,
-    before: Option<String>,
-    children: Vec<T>,
-}
-
-// settings
-#[derive(Deserialize)]
-struct Setting {
-    user_agent: String,
-    client_id: String,
-    client_secret: String,
-    username: String,
-    password: String,
-}
 
 #[tokio::main]
 async fn main() {
@@ -57,8 +21,7 @@ async fn main() {
     //     println!("{:?}", i.data.subreddit);
     // }
 
-    let setting_str: String = fs::read_to_string("Setting.toml").unwrap();
-    let setting: Setting = toml::from_str(&setting_str).unwrap();
+    let setting = Setting::load_toml("Setting.toml");
 
     let client = Reddit::new(
         &setting.user_agent,
