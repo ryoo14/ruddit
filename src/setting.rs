@@ -1,4 +1,6 @@
 use serde::Deserialize;
+use std::fs;
+use toml;
 
 // settings
 #[derive(Deserialize)]
@@ -12,7 +14,7 @@ pub struct Setting {
 
 impl Setting {
     pub fn load_toml(setting_file: &str) -> Setting {
-        let setting_str: String = std::fs::read_to_string(&setting_file).unwrap();
+        let setting_str = fs::read_to_string(&setting_file).unwrap();
         let setting = toml::from_str(&setting_str).unwrap();
         setting
     }

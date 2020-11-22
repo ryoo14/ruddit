@@ -21,8 +21,10 @@ async fn main() {
     //     println!("{:?}", i.data.subreddit);
     // }
 
+    // load setting for reddit api
     let setting = Setting::load_toml("Setting.toml");
 
+    // create Reddit instatnce
     let client = Reddit::new(
         &setting.user_agent,
         &setting.client_id,
@@ -35,6 +37,7 @@ async fn main() {
 
     let me = client.unwrap();
 
+    // request to get user subscribed subreddit
     let access_token = "bearer ".to_string() + &me.access_token;
     let url = String::from("https://oauth.reddit.com/subreddits/mine/subscriber");
     let resp = ureq::get(&url).set("Authorization", &access_token).call();
